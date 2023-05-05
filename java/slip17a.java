@@ -1,5 +1,5 @@
 import java.util.Scanner;
-public class A2A5
+public class slip17a
 {
     public static void main(String[] args) throws InterruptedException
     {

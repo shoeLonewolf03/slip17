@@ -1,0 +1,498 @@
+slip7a
+
+<%@ page language="java" %>
+<%@ page import="java.util.*" %>
+
+<html>
+  <head>
+    <title>Email Validation</title>
+  </head>
+  <body>
+    <h1>Email Validation</h1>
+    
+    <form action="slip7a.jsp" method="get">
+      <label>Enter your email:</label>
+      <input type="text" name="email">
+      <input type="submit" value="Validate">
+    </form>
+    
+    <% 
+      if(request.getParameter("email") != null) {
+        String email = request.getParameter("email");
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        if(email.matches(emailRegex)) {
+          out.println(email + " is a valid email.");
+        } else {
+          out.println(email + " is not a valid email.");
+        }
+      }
+
+    %>
+    
+  </body>
+</html>
+
+slip7b
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class slip7b implements Runnable, ActionListener {
+    private JFrame frame;
+    private JPanel panel;
+    private JTextField textField;
+    private JButton startButton, stopButton;
+    private Thread thread;
+    private boolean running;
+    public slip7b() {
+        frame = new JFrame("Number Display");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout());       
+        textField = new JTextField(10);
+        panel.add(textField);       
+        startButton = new JButton("Start");
+        startButton.addActionListener(this);
+        panel.add(startButton);       
+        stopButton = new JButton("Stop");
+        stopButton.addActionListener(this);
+        panel.add(stopButton);       
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    public void run() {
+        running = true;
+        int number = 1;
+        while (running && number <= 100) {
+            textField.setText(Integer.toString(number));
+            number++;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        textField.setText("");
+    }
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == startButton) {
+            if (thread == null) {
+                thread = new Thread(this);
+                thread.start();
+            }
+        } else if (event.getSource() == stopButton) {
+            if (thread != null) {
+                running = false;
+                thread = null;
+            }
+        }
+    }
+    public static void main(String[] args) {
+        new slip7b();
+    }
+}
+
+Q3. Create an Android Application to accept two numbers and find power and Average.
+Display the result on the next activity on Button click.
+
+MainActivity.java:
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+   private EditText number1EditText;
+   private EditText number2EditText;
+   private Button calculateButton;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+       super.onCreate(savedInstanceState);
+       setContentView(R.layout.activity_main);
+
+       number1EditText = findViewById(R.id.number1EditText);
+       number2EditText = findViewById(R.id.number2EditText);
+       calculateButton = findViewById(R.id.calculateButton);
+
+       calculateButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               int number1 = Integer.parseInt(number1EditText.getText().toString());
+               int number2 = Integer.parseInt(number2EditText.getText().toString());
+               double power = Math.pow(number1, number2);
+               double average = (number1 + number2) / 2.0;
+               Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+               intent.putExtra("power", power);
+               intent.putExtra("average", average);
+               startActivity(intent);
+           }
+       });
+   }
+}
+
+ActivityMain.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical"
+   tools:context=".MainActivity">
+
+   <EditText
+       android:id="@+id/number1EditText"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:hint="Enter first number"/>
+
+   <EditText
+       android:id="@+id/number2EditText"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:hint="Enter second number"/>
+
+   <Button
+       android:id="@+id/calculateButton"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="Calculate"/>
+
+</LinearLayout>
+
+Result_Activity.java:
+
+public class ResultActivity extends AppCompatActivity {
+
+private TextView powerTextView;
+private TextView averageTextView;
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_result);
+
+scss
+Copy code
+   powerTextView = findViewById(R.id.powerTextView);
+   averageTextView = findViewById(R.id.averageTextView);
+
+   Intent intent = getIntent();
+   double power = intent.getDoubleExtra("power", 0);
+   double average = intent.getDoubleExtra("average", 0);
+
+   powerTextView.setText("Power: " + power);
+   averageTextView.setText("Average: " + average);
+}
+}
+
+Activity_Results.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical"
+   tools:context=".ResultActivity">
+
+   <TextView
+       android:id="@+id/powerTextView"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+
+   <TextView
+       android:id="@+id/averageTextView"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+
+</LinearLayout>
+
+
+Q4. Create Android Application for performing the following operation on the table
+Customer (id, name, address, phno). (use SQLite database)
+i) Insert New Customer Details.
+ii) Show All the Customer Details on Toast Message.
+
+Manifest.xml:
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+App level gradle:
+implementation 'androidx.sqlite:sqlite:2.1.0'
+
+MainActivity.java:
+package com.example.slip7_2;
+
+import android.app.AlertDialog;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText cust_id, cust_name, cust_addr, cust_no;
+    Button addDetails, showTable;
+    SQLiteDatabase db;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Get references to the EditText and Button views
+        cust_id = findViewById(R.id.cust_id);
+        cust_name = findViewById(R.id.cust_name);
+        cust_addr = findViewById(R.id.cust_addr);
+        cust_no = findViewById(R.id.cust_no);
+        addDetails = findViewById(R.id.addDetails);
+        showTable = findViewById(R.id.show_table);
+
+        // Create a new database instance
+        db = openOrCreateDatabase("CustomerDB", MODE_PRIVATE, null);
+
+        // Create the Customer table if it doesn't exist
+        db.execSQL("CREATE TABLE IF NOT EXISTS Customer (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, phno TEXT)");
+
+        // Set a click listener for the addDetails button
+        addDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the values from the EditText views
+                String id = cust_id.getText().toString().trim();
+                String name = cust_name.getText().toString().trim();
+                String address = cust_addr.getText().toString().trim();
+                String phno = cust_no.getText().toString().trim();
+
+                // Insert the new Customer details into the database
+                String insertQuery = "INSERT INTO Customer (id, name, address, phno) VALUES ('" + id + "', '" + name + "', '" + address + "', '" + phno + "')";
+                db.execSQL(insertQuery);
+
+                // Clear the EditText views
+                cust_id.setText("");
+                cust_name.setText("");
+                cust_addr.setText("");
+                cust_no.setText("");
+
+                // Display a Toast message to confirm the operation
+                Toast.makeText(MainActivity.this, "Details added successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set a click listener for the showTable button
+        showTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Retrieve all the Customer details from the database
+                String selectQuery = "SELECT * FROM Customer";
+                Cursor cursor = db.rawQuery(selectQuery, null);
+
+                // Create a StringBuilder to store the results
+                StringBuilder sb = new StringBuilder();
+                while (cursor.moveToNext()) {
+                    sb.append("ID: ").append(cursor.getInt(0)).append("\n");
+                    sb.append("Name: ").append(cursor.getString(1)).append("\n");
+                    sb.append("Address: ").append(cursor.getString(2)).append("\n");
+                    sb.append("Phone number: ").append(cursor.getString(3)).append("\n\n");
+                }
+                showTable(String.valueOf(sb));
+                // Close the cursor
+                cursor.close();
+            }
+        });
+    }
+    private void showTable(String data) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Customer Details");
+        builder.setMessage(data);
+        builder.show();
+    }
+}
+
+ActivityMain.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <!--Edit text to enter course name-->
+    <EditText
+        android:id="@+id/cust_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Customer id" />
+
+    <!--edit text to enter course duration-->
+    <EditText
+        android:id="@+id/cust_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Customer Name" />
+
+    <!--edit text to display course tracks-->
+    <EditText
+        android:id="@+id/cust_addr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Customer address" />
+
+    <!--edit text for course description-->
+    <EditText
+        android:id="@+id/cust_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Enter Customer Phone Number" />
+
+    <!--button for adding new course-->
+    <Button
+        android:id="@+id/addDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Add Details"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/show_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Show table"/>
+
+</LinearLayout>
+
+Customer.java:
+
+package com.example.slip7_2;
+
+public class Customer {
+    private int id;
+    private String name;
+    private String address;
+    private String phno;
+
+    public Customer(int id, String name, String address, String phno) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phno = phno;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPhno() {
+        return phno;
+    }
+}
+
+CustomerDatabaseHelper.java:
+
+package com.example.slip7_2;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerDatabaseHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "customer.db";
+    private static final int DATABASE_VERSION = 1;
+
+    private static final String TABLE_NAME = "customer";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_ADDRESS = "address";
+    private static final String COLUMN_PHNO = "phno";
+
+    public CustomerDatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String createTableSql = "CREATE TABLE " + TABLE_NAME + " ("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_NAME + " TEXT, "
+                + COLUMN_ADDRESS + " TEXT, "
+                + COLUMN_PHNO + " TEXT"
+                + ")";
+        db.execSQL(createTableSql);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // not used in this example
+    }
+
+    public long insertCustomer(Customer customer) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, customer.getName());
+        values.put(COLUMN_ADDRESS, customer.getAddress());
+        values.put(COLUMN_PHNO, customer.getPhno());
+
+        long id = db.insert(TABLE_NAME, null, values);
+
+        db.close();
+
+        return id;
+    }
+
+    public List<Customer> getAllCustomers() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String selectAllSql = "SELECT * FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectAllSql, null);
+
+        List<Customer> customers = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+            String address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
+            String phno = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHNO));
+
+            Customer customer = new Customer(id, name, address, phno);
+            customers.add(customer);
+        }
+
+        cursor.close();
+        db.close();
+
+        return customers;
+    }
+}
+
