@@ -29,3 +29,56 @@ sns.barplot(data=df,x="sex",y="total_bill",hue="day")
 sns.countplot(data=df,x="total_bill")
 
 sns.barplot(data=df,x="total_bill",y="tip",hue="smoker")
+
+
+
+#Q2
+
+
+
+import pandas as pd
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+df=pd.read_csv('salary.csv')
+df
+
+df.shape
+
+df.info()
+
+df.isnull().sum()
+
+sns.regplot(x=df.exp,y=df.salary)
+
+#seperate the x and y
+x=df.drop('salary',axis=1)
+x
+
+y=df.salary
+y
+
+#create tehe machine learning model
+model=LinearRegression()
+#training the machine learning model
+model.fit(x,y)
+
+#test the model/predict the salary based on experience
+model.predict([[6]])
+
+model.predict([[1]])
+
+model.predict([[2]])
+
+y_predict=model.predict(x)
+y_predict
+
+y
+
+print("r2 score ",r2_score(y,y_predict))
+
+model.intercept_
+
+model.coef_
+
